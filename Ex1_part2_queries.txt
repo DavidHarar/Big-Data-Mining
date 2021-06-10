@@ -1,0 +1,272 @@
+# Student IDs: 
+ID1: 
+ID2: 
+
+""" Query 1: """
+
+SELECT id, title, tags, answer_count, score
+FROM `bigquery-public-data.stackoverflow.posts_questions`
+WHERE tags LIKE '%Python%' OR tags LIKE '%python%'
+ORDER BY score DESC
+
+""" Query 1 Output (Json): """
+
+       [
+  {
+    "id": "231767",
+    "title": "What does the \"yield\" keyword do?",
+    "tags": "python|iterator|generator|yield|coroutine",
+    "answer_count": "43",
+    "score": "10935"
+  },
+  {
+    "id": "419163",
+    "title": "What does if __name__ == \"__main__\": do?",
+    "tags": "python|namespaces|main|python-module|idioms",
+    "answer_count": "35",
+    "score": "6629"
+  },
+  {
+    "id": "394809",
+    "title": "Does Python have a ternary conditional operator?",
+    "tags": "python|operators|ternary-operator|conditional-operator",
+    "answer_count": "28",
+    "score": "6501"
+  },
+  {
+    "id": "100003",
+    "title": "What are metaclasses in Python?",
+    "tags": "python|oop|metaclass|python-class|python-datamodel",
+    "answer_count": "20",
+    "score": "6068"
+  },
+  {
+    "id": "82831",
+    "title": "How do I check whether a file exists without exceptions?",
+    "tags": "python|file|file-exists",
+    "answer_count": "41",
+    "score": "6012"
+  }, ....]
+
+""" Query 2: """
+
+SELECT COUNT(id) AS Posts, 
+    COUNTIF(answer_count >= 1) AS PostsWithAnswares,
+    AVG(score) AS AVGScore
+FROM `bigquery-public-data.stackoverflow.posts_questions`
+WHERE (tags LIKE '%Python%' OR tags LIKE '%python%')
+
+
+""" Query 2 Output (Json): """
+
+[
+  {
+    "Posts": "1829702",
+    "PostsWithAnswares": "1528285",
+    "AVGScore": "2.254076346858669"
+  }
+]
+
+""" Query 3: """
+
+SELECT EXTRACT(DAYOFWEEK FROM creation_date) AS day, 
+    COUNT(id) AS Posts, 
+    COUNTIF(answer_count >= 1) AS PostsWithAnswares,
+    AVG(score) AS AVGScore
+FROM `bigquery-public-data.stackoverflow.posts_questions`
+WHERE (tags LIKE '%Python%' OR tags LIKE '%python%')
+GROUP BY day
+ORDER BY AVGScore DESC
+
+""" Query 3 Output (Json): """
+
+[
+  {
+    "day": "5",
+    "Posts": "302838",
+    "PostsWithAnswares": "252574",
+    "AVGScore": "2.353628012336629"
+  },
+  {
+    "day": "3",
+    "Posts": "301992",
+    "PostsWithAnswares": "251789",
+    "AVGScore": "2.3139420911812234"
+  },
+  {
+    "day": "4",
+    "Posts": "308103",
+    "PostsWithAnswares": "256655",
+    "AVGScore": "2.3063196398606953"
+  },
+  {
+    "day": "6",
+    "Posts": "273198",
+    "PostsWithAnswares": "228501",
+    "AVGScore": "2.2585524052152652"
+  },
+  {
+    "day": "2",
+    "Posts": "279898",
+    "PostsWithAnswares": "232824",
+    "AVGScore": "2.1622626814053696"
+  },
+  {
+    "day": "7",
+    "Posts": "178220",
+    "PostsWithAnswares": "149830",
+    "AVGScore": "2.158910335540343"
+  },
+  {
+    "day": "1",
+    "Posts": "185453",
+    "PostsWithAnswares": "156112",
+    "AVGScore": "2.1306638339633226"
+  }
+]
+
+""" Query 3  Answer:  """
+I chose to sort my output by the average quality of the post. The highest average quality day is Thursday and the lowest average quality day is Sunday. At a first glance the
+difference in the average scores is insignificant. In this question the desired variables were specified exactly. In a "real-life" situation I would also calculate the 
+standard deviations and construct a T-test for different means.
+
+""" Query 4: """
+
+SELECT about_me, website_url, reputation, display_name
+FROM `bigquery-public-data.stackoverflow.users`
+WHERE (about_me LIKE '%Python%' OR about_me LIKE '%python%') AND (location LIKE '%Chicago%' OR location LIKE '%chicago%')
+ORDER BY reputation DESC
+LIMIT 1
+
+""" Query 4 Output (Json): """
+
+[
+  {
+    "about_me": "<p>Data analytics polygot dabbling in general-purpose (Python, R, PHP, Java); special-purpose (XSLT, SQL); formats (XML, JSON, CSV); statistical packages (SAS, Stata); relational databases (PostgreSQL, SQL Server, MySQL, MS Access, SQLite).</p>\n\n<p>And still pouring out on midnight bridges:</p>\n\n<p><i>Oh I'm so lonely, Since my baby left me.<br/>\nI got no money, And nothing is free.</i></p>\n\n<p><i>I've been so lonely, On this long, hard road.<br/>\nAll I do now these days, Is tweak this rusty, rusty old code.</i></p>",
+    "website_url": "https://www.linkedin.com/pub/parfait-gasana/12/b80/700",
+    "reputation": "85386",
+    "display_name": "Parfait"
+  }
+]
+
+""" Query 5: """
+
+SELECT EXTRACT(YEAR FROM creation_date) AS year,
+    AVG(reputation) AS AVGReputation
+FROM `bigquery-public-data.stackoverflow.users`
+GROUP BY year
+ORDER BY year DESC
+
+""" Query 5 Output (Json): """
+
+[
+  {
+    "year": "2021",
+    "AVGReputation": "2.2648433429086863"
+  },
+  {
+    "year": "2020",
+    "AVGReputation": "4.706179916268707"
+  },
+  {
+    "year": "2019",
+    "AVGReputation": "9.31344500552396"
+  },
+  {
+    "year": "2018",
+    "AVGReputation": "15.33756483814543"
+  },
+  {
+    "year": "2017",
+    "AVGReputation": "22.38794886605008"
+  },
+  {
+    "year": "2016",
+    "AVGReputation": "38.32450354708123"
+  },
+  {
+    "year": "2015",
+    "AVGReputation": "63.5837083381537"
+  },
+  {
+    "year": "2014",
+    "AVGReputation": "87.76701883177118"
+  },
+  {
+    "year": "2013",
+    "AVGReputation": "140.61551457870587"
+  },
+  {
+    "year": "2012",
+    "AVGReputation": "311.5357557300485"
+  },
+  {
+    "year": "2011",
+    "AVGReputation": "677.638856142754"
+  },
+  {
+    "year": "2010",
+    "AVGReputation": "1147.9335792617117"
+  },
+  {
+    "year": "2009",
+    "AVGReputation": "3254.6128044091206"
+  },
+  {
+    "year": "2008",
+    "AVGReputation": "8728.546260797259"
+  }
+]
+
+""" Query 5  Answer:  """
+
+Yes! Without getting into statistical tests, we see a clear picture that shows each year the average reputation is approximatly doubled.
+
+""" Query 6: """
+
+SELECT about_me, website_url, reputation, display_name
+FROM `bigquery-public-data.stackoverflow.users`
+WHERE (location LIKE '%Chicago%' OR location LIKE '%chicago%') AND (EXTRACT(YEAR FROM creation_date)>2020)
+ORDER BY reputation DESC
+LIMIT 1
+
+
+""" Query 6 Output (Json): """
+
+[
+  {
+    "about_me": null,
+    "website_url": null,
+    "reputation": "97",
+    "display_name": "Luke Justin"
+  }
+]
+
+""" Query 7: """
+
+SELECT 
+    (q.profile_image_url) IS NULL AS has_profile_picture, 
+    AVG(CAST((a.answer_count>0) AS INT64)) AS at_least_one_answare, 
+FROM `bigquery-public-data.stackoverflow.users` as q
+INNER JOIN `bigquery-public-data.stackoverflow.posts_questions` AS a
+    ON q.id = a.owner_user_id
+GROUP BY has_profile_picture
+
+""" Query 7 Output (Json): """
+
+[
+  {
+    "has_profile_picture": true,
+    "at_least_one_answare": "0.906843844865752"
+  },
+  {
+    "has_profile_picture": false,
+    "at_least_one_answare": "0.8254613458295117"
+  }
+]
+
+""" Query 7  Answer:  """
+
+I Created two dummy variables for if a person has a profile picture (if not, then profile_image_url equals NULL) and for if the posts that he wrote got at least one answare.
+It seems that having a profile picture is correlated with about 8% higher rate of having at least one answare to ones question.
+
